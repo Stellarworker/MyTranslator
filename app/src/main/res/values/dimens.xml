@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- MainActivity begin -->
+    <dimen name="activity_main_search_button_margin_end">20dp</dimen>
+    <dimen name="activity_main_search_button_margin_bottom">20dp</dimen>
+    <dimen name="activity_main_search_button_max_image_size">25dp</dimen>
+    <dimen name="activity_main_error_message_text_size">25sp</dimen>
+    <dimen name="activity_main_reload_button_text_size">25sp</dimen>
+    <dimen name="activity_main_return_button_text_size">25sp</dimen>
+    <!-- MainActivity end -->
+
+    <!-- Search dialog begin -->
+    <dimen name="search_dialog_search_field_margin_horizontal">10dp</dimen>
+    <!-- Search dialog end -->
+
+    <!-- Translation item begin -->
+    <dimen name="translation_item_root_margin_start">5dp</dimen>
+    <dimen name="translation_item_root_margin_top">5dp</dimen>
+    <dimen name="translation_item_root_margin_end">5dp</dimen>
+    <dimen name="translation_item_root_corner_radius">5dp</dimen>
+    <dimen name="translation_item_root_elevation">5dp</dimen>
+    <dimen name="translation_item_container_padding_vertical">5dp</dimen>
+    <dimen name="translation_item_title_margin_horizontal">10dp</dimen>
+    <dimen name="translation_item_title_text_size">20sp</dimen>
+    <dimen name="translation_item_description_margin_horizontal">10dp</dimen>
+    <dimen name="translation_item_description_text_size">15sp</dimen>
+    <!-- Translation item end -->
+
+</resources>
