@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/translation_item_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/translation_item_root_margin_start"
+    android:layout_marginTop="@dimen/translation_item_root_margin_top"
+    android:layout_marginEnd="@dimen/translation_item_root_margin_end"
+    app:cardCornerRadius="@dimen/translation_item_root_corner_radius"
+    app:cardElevation="@dimen/translation_item_root_elevation">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/translation_item_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/translation_item_container_padding_vertical">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/translation_item_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/translation_item_title_margin_horizontal"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textSize="@dimen/translation_item_title_text_size"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/translation_item_description"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/translation_item_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/translation_item_description_margin_horizontal"
+            android:textSize="@dimen/translation_item_description_text_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/translation_item_title" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>
