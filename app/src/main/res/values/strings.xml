@@ -6,10 +6,8 @@
 
     <!-- MainActivity begin -->
     <string name="activity_main_search_button_content_description">Search in dictionary</string>
-    <string name="activity_main_error_message">SEARCHING ERROR!</string>
     <string name="activity_main_reload_button">Reload</string>
     <string name="activity_main_return_button">Return</string>
-    <string name="activity_main_nothing_found">NOTHING HAS BEEN FOUND!</string>
     <!-- MainActivity end -->
 
     <!-- Search Dialog begin -->
@@ -18,5 +16,11 @@
     <string name="search_dialog_negative_button">Cancel</string>
     <string name="search_dialog_positive_button">Search</string>
     <!-- Search Dialog end -->
+
+    <!-- Messages begin -->
+    <string name="message_searching_error">SEARCHING ERROR!</string>
+    <string name="message_nothing_found">NOTHING WAS FOUND!</string>
+    <string name="message_no_internet">NO INTERNET CONNECTION!</string>
+    <!-- Messages end -->
 
 </resources>
