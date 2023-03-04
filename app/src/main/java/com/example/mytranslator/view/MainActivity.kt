@@ -1,50 +1,53 @@
 package com.example.mytranslator.view
 
 import android.os.Bundle
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.mytranslator.R
 import com.example.mytranslator.databinding.ActivityMainBinding
 import com.example.mytranslator.databinding.SearchDialogBinding
+import com.example.mytranslator.model.data.AppMessage
 import com.example.mytranslator.model.data.DataModel
-import com.example.mytranslator.presenter.MainActivityPresenterContract
-import com.google.android.material.snackbar.Snackbar
-import org.koin.android.ext.android.inject
+import com.example.mytranslator.utils.ZERO
+import com.example.mytranslator.utils.hide
+import com.example.mytranslator.utils.show
+import dagger.android.AndroidInjection
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val adapter = MainActivityAdapter()
-    private val presenter: MainActivityPresenterContract by inject()
+
+    @Inject
+    lateinit var viewModel: MainActivityViewModel
+    private var alertDialog: AlertDialog? = null
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        initViewModel()
         initButtons()
         initRecyclerView()
+        viewModel.restoreState()
     }
 
-    override fun onStart() {
-        super.onStart()
-        presenter.attach(this)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        presenter.detach()
+    private fun initViewModel() {
+        viewModel.messagesLiveData.observe(this) { appMessage ->
+            processMessages(appMessage)
+        }
     }
 
     private fun initButtons() {
         binding.activityMainSearchButton.setOnClickListener {
-            presenter.onSearchButtonPressed()
+            viewModel.onSearchButtonPressed()
         }
         binding.activityMainReloadButton.setOnClickListener {
-            presenter.onReloadButtonPressed()
+            viewModel.onReloadButtonPressed()
         }
         binding.activityMainReturnButton.setOnClickListener {
-            presenter.onReturnButtonPressed()
+            viewModel.onReturnButtonPressed()
         }
     }
 
@@ -52,69 +55,80 @@ class MainActivity : AppCompatActivity() {
         binding.activityMainList.adapter = adapter
     }
 
-    fun showDialog() {
+    private fun processMessages(appMessage: AppMessage) {
+        with(appMessage) {
+            when (this) {
+                is AppMessage.AppMessages -> processMultipleMessages(messages)
+                is AppMessage.Translations -> renderData(translations)
+                is AppMessage.SearchDialog -> showSearchDialog()
+                is AppMessage.DataScreen -> showDataScreen()
+                is AppMessage.EventScreen -> showEventsScreen(message)
+                is AppMessage.LoadingScreen -> showLoadingScreen()
+                is AppMessage.Empty -> {}
+            }
+        }
+    }
+
+    private fun processMultipleMessages(messages: List<AppMessage>) {
+        messages.forEach { appMessage ->
+            processMessages(appMessage)
+        }
+    }
+
+    private fun showSearchDialog() {
+        alertDialog?.dismiss()
         val searchDialogBinding = SearchDialogBinding.inflate(layoutInflater)
-        AlertDialog.Builder(this)
+        alertDialog = AlertDialog.Builder(this)
             .setTitle(this.getString(R.string.search_dialog_title))
             .setNegativeButton(getString(R.string.search_dialog_negative_button))
-            { dialog, _ -> dialog.dismiss() }
+            { dialog, _ ->
+                viewModel.onDialogCancelButtonPressed()
+                dialog.dismiss()
+            }
             .setPositiveButton(getString(R.string.search_dialog_positive_button))
-            { _, _ ->
+            { dialog, _ ->
                 val word = searchDialogBinding.searchDialogSearchField.text.toString().trim()
-                presenter.onSearchRequest(word)
+                viewModel.onDialogSearchButtonPressed(word)
+                dialog.dismiss()
             }
             .setView(searchDialogBinding.root)
             .create()
-            .show()
+        alertDialog?.show()
+        searchDialogBinding.searchDialogSearchField.requestFocus()
     }
 
-    fun renderData(data: List<DataModel>) {
+    private fun renderData(data: List<DataModel>) {
         adapter.setData(data)
-        binding.activityMainList.smoothScrollToPosition(ZERO_INT)
+        binding.activityMainList.smoothScrollToPosition(Int.ZERO)
     }
 
-    fun showData() {
+    private fun showDataScreen() {
         with(binding) {
-            activityMainLoadingProgress.visibility = GONE
-            activityMainList.visibility = VISIBLE
-            activityMainSearchButton.visibility = VISIBLE
-            activityMainErrorMessage.visibility = GONE
-            activityMainReloadButton.visibility = GONE
-            activityMainReturnButton.visibility = GONE
+            activityMainDataScreen.show()
+            activityMainEventScreen.hide()
+            activityMainLoadingScreen.hide()
         }
     }
 
-    fun showError() {
+    private fun showEventsScreen(message: String) {
         with(binding) {
-            activityMainLoadingProgress.visibility = GONE
-            activityMainList.visibility = GONE
-            activityMainSearchButton.visibility = GONE
-            activityMainErrorMessage.visibility = VISIBLE
-            activityMainReloadButton.visibility = VISIBLE
-            activityMainReturnButton.visibility = VISIBLE
+            activityMainEventMessage.text = message
+            activityMainEventScreen.show()
+            activityMainDataScreen.hide()
+            activityMainLoadingScreen.hide()
         }
     }
 
-    fun showLoading() {
+    private fun showLoadingScreen() {
         with(binding) {
-            activityMainLoadingProgress.visibility = VISIBLE
-            activityMainList.visibility = GONE
-            activityMainSearchButton.visibility = GONE
-            activityMainErrorMessage.visibility = GONE
-            activityMainReloadButton.visibility = GONE
-            activityMainReturnButton.visibility = GONE
+            activityMainLoadingScreen.show()
+            activityMainDataScreen.hide()
+            activityMainEventScreen.hide()
         }
     }
 
-    fun showEmptyDataMessage() {
-        Snackbar.make(
-            binding.root,
-            getString(R.string.activity_main_nothing_found),
-            Snackbar.LENGTH_SHORT
-        ).show()
-    }
-
-    companion object {
-        private const val ZERO_INT = 0
+    override fun onStop() {
+        super.onStop()
+        alertDialog?.dismiss()
     }
 }
