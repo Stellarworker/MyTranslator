@@ -17,12 +17,13 @@ class MainActivityAdapter : RecyclerView.Adapter<MainActivityAdapter.RecyclerIte
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerItemViewHolder {
-        return RecyclerItemViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.translation_item, parent, false) as View
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerItemViewHolder =
+        RecyclerItemViewHolder(
+            LayoutInflater
+                .from(parent.context)
+                .inflate(R.layout.translation_item, parent, false)
+                    as View
         )
-    }
 
     override fun onBindViewHolder(holder: RecyclerItemViewHolder, position: Int) {
         holder.bind(data[position])

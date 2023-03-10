@@ -6,4 +6,5 @@ interface MainActivityViewModelContract {
     fun onSearchButtonPressed()
     fun onDialogSearchButtonPressed(word: String)
     fun onDialogCancelButtonPressed()
+    fun restoreState()
 }

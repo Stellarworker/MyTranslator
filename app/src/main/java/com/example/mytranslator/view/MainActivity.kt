@@ -11,43 +11,40 @@ import com.example.mytranslator.model.data.DataModel
 import com.example.mytranslator.utils.ZERO
 import com.example.mytranslator.utils.hide
 import com.example.mytranslator.utils.show
-import dagger.android.AndroidInjection
-import javax.inject.Inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val adapter = MainActivityAdapter()
 
-    @Inject
-    lateinit var viewModel: MainActivityViewModel
+    private val mainViewModel: MainActivityViewModel by viewModel()
     private var alertDialog: AlertDialog? = null
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initViewModel()
         initButtons()
         initRecyclerView()
-        viewModel.restoreState()
+        mainViewModel.restoreState()
     }
 
     private fun initViewModel() {
-        viewModel.messagesLiveData.observe(this) { appMessage ->
+        mainViewModel.messagesLiveData.observe(this) { appMessage ->
             processMessages(appMessage)
         }
     }
 
     private fun initButtons() {
         binding.activityMainSearchButton.setOnClickListener {
-            viewModel.onSearchButtonPressed()
+            mainViewModel.onSearchButtonPressed()
         }
         binding.activityMainReloadButton.setOnClickListener {
-            viewModel.onReloadButtonPressed()
+            mainViewModel.onReloadButtonPressed()
         }
         binding.activityMainReturnButton.setOnClickListener {
-            viewModel.onReturnButtonPressed()
+            mainViewModel.onReturnButtonPressed()
         }
     }
 
@@ -80,15 +77,13 @@ class MainActivity : AppCompatActivity() {
         val searchDialogBinding = SearchDialogBinding.inflate(layoutInflater)
         alertDialog = AlertDialog.Builder(this)
             .setTitle(this.getString(R.string.search_dialog_title))
-            .setNegativeButton(getString(R.string.search_dialog_negative_button))
-            { dialog, _ ->
-                viewModel.onDialogCancelButtonPressed()
+            .setNegativeButton(getString(R.string.search_dialog_negative_button)) { dialog, _ ->
+                mainViewModel.onDialogCancelButtonPressed()
                 dialog.dismiss()
             }
-            .setPositiveButton(getString(R.string.search_dialog_positive_button))
-            { dialog, _ ->
+            .setPositiveButton(getString(R.string.search_dialog_positive_button)) { dialog, _ ->
                 val word = searchDialogBinding.searchDialogSearchField.text.toString().trim()
-                viewModel.onDialogSearchButtonPressed(word)
+                mainViewModel.onDialogSearchButtonPressed(word)
                 dialog.dismiss()
             }
             .setView(searchDialogBinding.root)

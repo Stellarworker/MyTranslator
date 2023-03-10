@@ -2,10 +2,11 @@ package com.example.mytranslator.model.repository
 
 import com.example.mytranslator.model.data.DataModel
 import com.example.mytranslator.model.retrofit.DictRemoteDataSource
-import io.reactivex.Observable
 
 class RepositoryImpl(private val dataSource: DictRemoteDataSource) :
-    Repository<List<DataModel>> {
+    Repository {
 
-    override fun getData(word: String): Observable<List<DataModel>> = dataSource.getData(word)
+    override fun getData(word: String, callback: retrofit2.Callback<List<DataModel>>) {
+        dataSource.getData(word, callback)
+    }
 }

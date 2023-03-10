@@ -10,31 +10,83 @@ import com.example.mytranslator.model.repository.Repository
 import com.example.mytranslator.utils.EMPTY
 import com.example.mytranslator.utils.isOnline
 import com.example.mytranslator.viewmodel.MainActivityViewModelContract
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.observers.DisposableObserver
-import io.reactivex.schedulers.Schedulers
-import javax.inject.Inject
+import kotlinx.coroutines.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-class MainActivityViewModel @Inject constructor(
+class MainActivityViewModel(
     private val application: Application,
-    private val repo: Repository<List<DataModel>>
+    private val repo: Repository
 ) : ViewModel(), MainActivityViewModelContract {
 
     private val _messagesLiveData = SingleLiveEvent<AppMessage>()
     val messagesLiveData: SingleLiveEvent<AppMessage> by this::_messagesLiveData
 
-    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private var currentWord = String.EMPTY
     private var currentScreen: AppMessage = AppMessage.Empty
     private var currentDialogShow = false
+    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, error ->
+        requestSearchErrorScreen()
+        error.printStackTrace()
+    }
+    private var queryJob: Job? = null
+    private val mainScope =
+        CoroutineScope(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler)
 
-    override fun onSearchButtonPressed() {
-        currentDialogShow = true
-        _messagesLiveData.postValue(AppMessage.SearchDialog)
+    private val callBack = object : Callback<List<DataModel>> {
+
+        override fun onResponse(call: Call<List<DataModel>>, response: Response<List<DataModel>>) {
+            val data: List<DataModel>? = response.body()
+            data?.let { dataNotNull ->
+                currentScreen = if (dataNotNull.isNotEmpty()) {
+                    AppMessage.AppMessages(
+                        listOf(
+                            AppMessage.Translations(dataNotNull),
+                            AppMessage.DataScreen
+                        )
+                    )
+                } else {
+                    AppMessage.EventScreen(application.getString(R.string.message_nothing_found))
+                }
+                _messagesLiveData.postValue(currentScreen)
+            } ?: run {
+                requestSearchErrorScreen()
+            }
+        }
+
+        override fun onFailure(call: Call<List<DataModel>>, t: Throwable) {
+            requestSearchErrorScreen()
+        }
+
+    }
+
+    private fun startSearching(word: String) {
+        queryJob?.cancel()
+        queryJob = mainScope.launch {
+            if (isOnline(application)) {
+                requestData(word)
+            } else {
+                currentScreen =
+                    AppMessage.EventScreen(application.getString(R.string.message_no_internet))
+                _messagesLiveData.postValue(currentScreen)
+            }
+        }
+    }
+
+    private fun requestData(word: String) {
+        repo.getData(word, callBack)
+    }
+
+    private fun requestSearchErrorScreen() {
+        currentScreen =
+            AppMessage.EventScreen(application.getString(R.string.message_searching_error))
+        _messagesLiveData.postValue(currentScreen)
     }
 
     override fun onReloadButtonPressed() {
+        currentScreen = AppMessage.LoadingScreen
+        _messagesLiveData.postValue(currentScreen)
         startSearching(currentWord)
     }
 
@@ -43,9 +95,16 @@ class MainActivityViewModel @Inject constructor(
         _messagesLiveData.postValue(currentScreen)
     }
 
+    override fun onSearchButtonPressed() {
+        currentDialogShow = true
+        _messagesLiveData.postValue(AppMessage.SearchDialog)
+    }
+
     override fun onDialogSearchButtonPressed(word: String) {
         currentDialogShow = false
         currentWord = word
+        currentScreen = AppMessage.LoadingScreen
+        _messagesLiveData.postValue(currentScreen)
         startSearching(currentWord)
     }
 
@@ -53,58 +112,11 @@ class MainActivityViewModel @Inject constructor(
         currentDialogShow = false
     }
 
-    private fun startSearching(word: String) {
-        if (isOnline(application)) {
-            getData(word)
-        } else {
-            currentScreen =
-                AppMessage.EventScreen(application.getString(R.string.message_no_internet))
-            _messagesLiveData.postValue(currentScreen)
-        }
-    }
-
-    private fun getData(word: String) {
-        currentScreen = AppMessage.LoadingScreen
-        compositeDisposable.add(
-            repo.getData(word)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { _messagesLiveData.postValue(currentScreen) }
-                .subscribeWith(getObserver())
-        )
-    }
-
-    fun restoreState() {
-        val messages: MutableList<AppMessage> = mutableListOf()
-        if (currentScreen != AppMessage.Empty) {
-            messages.add(currentScreen)
-        }
+    override fun restoreState() {
+        val messages: MutableList<AppMessage> = mutableListOf(currentScreen)
         if (currentDialogShow) {
             messages.add(AppMessage.SearchDialog)
         }
-        if (messages.isNotEmpty()) {
-            _messagesLiveData.postValue(AppMessage.AppMessages(messages))
-        }
-    }
-
-    private fun getObserver() = object : DisposableObserver<List<DataModel>>() {
-
-        override fun onNext(data: List<DataModel>) {
-            currentScreen = if (data.isEmpty())
-                AppMessage.EventScreen(application.getString(R.string.message_nothing_found))
-            else AppMessage.AppMessages(
-                listOf(AppMessage.Translations(data), AppMessage.DataScreen)
-            )
-            _messagesLiveData.postValue(currentScreen)
-        }
-
-        override fun onError(e: Throwable) {
-            currentScreen =
-                AppMessage.EventScreen(application.getString(R.string.message_searching_error))
-            _messagesLiveData.postValue(currentScreen)
-            e.printStackTrace()
-        }
-
-        override fun onComplete() {}
+        _messagesLiveData.postValue(AppMessage.AppMessages(messages))
     }
 }
