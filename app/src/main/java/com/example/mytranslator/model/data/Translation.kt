@@ -2,7 +2,11 @@ package com.example.mytranslator.model.data
 
 import com.google.gson.annotations.SerializedName
 
-class Translation(
-    @field:SerializedName("text")
+data class Translation(
+    @field:SerializedName(TEXT_SERIALIZED_NAME)
     val translation: String? = null
-)
+) {
+    companion object {
+        private const val TEXT_SERIALIZED_NAME = "text"
+    }
+}
