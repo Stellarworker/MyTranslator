@@ -1,6 +1,6 @@
 package com.example.mytranslator.model.retrofit
 
-import com.example.mytranslator.model.data.DataModel
+import com.example.mytranslator.model.data.dto.DataModelDTO
 import com.google.gson.GsonBuilder
 import retrofit2.Callback
 import retrofit2.Retrofit
@@ -14,7 +14,7 @@ class DictRemoteDataSource {
         .build()
         .create(DictAPI::class.java)
 
-    fun getData(word: String, callback: Callback<List<DataModel>>) {
+    fun getData(word: String, callback: Callback<List<DataModelDTO>>) {
         dictApi.search(word).enqueue(callback)
     }
 

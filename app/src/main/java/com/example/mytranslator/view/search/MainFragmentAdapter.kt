@@ -1,4 +1,4 @@
-package com.example.mytranslator.view
+package com.example.mytranslator.view.search
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,13 +6,15 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mytranslator.R
-import com.example.mytranslator.model.data.DataModel
+import com.example.mytranslator.model.data.WordData
 
-class MainActivityAdapter : RecyclerView.Adapter<MainActivityAdapter.RecyclerItemViewHolder>() {
+class MainFragmentAdapter(
+    val onItemClick: ((wordData: WordData) -> Unit)? = null
+) : RecyclerView.Adapter<MainFragmentAdapter.RecyclerItemViewHolder>() {
 
-    private var data: List<DataModel> = mutableListOf()
+    private var data: List<WordData> = mutableListOf()
 
-    fun setData(data: List<DataModel>) {
+    fun setData(data: List<WordData>) {
         this.data = data
         notifyDataSetChanged()
     }
@@ -37,9 +39,15 @@ class MainActivityAdapter : RecyclerView.Adapter<MainActivityAdapter.RecyclerIte
         private val description: AppCompatTextView =
             itemView.findViewById(R.id.translation_item_description)
 
-        fun bind(data: DataModel) {
-            title.text = data.text
-            description.text = data.meanings?.first()?.translation?.translation
+        init {
+            itemView.setOnClickListener {
+                onItemClick?.invoke(data[adapterPosition])
+            }
+        }
+
+        fun bind(data: WordData) {
+            title.text = data.word
+            description.text = data.translation
         }
     }
 }
