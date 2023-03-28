@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fragment_details_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:id="@+id/fragment_details_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/fragment_details_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/fragment_details_container_padding">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/fragment_details_word"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/fragment_details_word_margin_top"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="@dimen/fragment_details_word_text_size" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/fragment_details_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/fragment_details_image_margin_top"
+                android:scaleType="fitCenter" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/fragment_details_translation_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/fragment_details_translation_label_margin_top"
+                android:text="@string/fragment_details_translation_label"
+                android:textAlignment="textStart"
+                android:textSize="@dimen/fragment_details_translation_label_text_size" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/fragment_details_translation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/fragment_details_translation_margin_top"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="@dimen/fragment_details_translation_text_size" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

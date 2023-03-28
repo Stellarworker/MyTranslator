@@ -1,12 +1,12 @@
-package com.example.mytranslator.model.data
+package com.example.mytranslator.model.data.dto
 
 import com.google.gson.annotations.SerializedName
 
-data class DataModel(
+data class DataModelDTO(
     @field:SerializedName(TEXT_SERIALIZED_NAME)
     val text: String? = null,
     @field:SerializedName(MEANINGS_SERIALIZED_NAME)
-    val meanings: List<Meanings>? = null
+    val meanings: List<MeaningsDTO>? = null
 ) {
     companion object {
         private const val TEXT_SERIALIZED_NAME = "text"
