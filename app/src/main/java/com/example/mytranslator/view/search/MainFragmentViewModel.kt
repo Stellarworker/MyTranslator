@@ -2,17 +2,17 @@ package com.example.mytranslator.view.search
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
+import com.example.core.SingleLiveEvent
+import com.example.core.messages.MainFragmentMessages
+import com.example.core.messages.WordData
 import com.example.mytranslator.R
-import com.example.mytranslator.model.data.SingleLiveEvent
-import com.example.mytranslator.model.data.WordData
-import com.example.mytranslator.model.data.dto.DataModelDTO
-import com.example.mytranslator.model.data.messages.MainFragmentMessages
-import com.example.mytranslator.model.repository.local.LocalRepository
-import com.example.mytranslator.model.repository.remote.Repository
-import com.example.mytranslator.utils.EMPTY
-import com.example.mytranslator.utils.InetMapper
-import com.example.mytranslator.utils.isOnline
 import com.example.mytranslator.viewmodel.MainFragmentViewModelContract
+import com.example.repository.local.LocalRepository
+import com.example.repository.mappers.InetMapper
+import com.example.repository.remote.Repository
+import com.example.repository.retrofit.dto.DataModelDTO
+import com.example.utils.EMPTY
+import com.example.utils.isOnline
 import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -23,7 +23,6 @@ class MainFragmentViewModel(
     private val repo: Repository,
     private val localRepo: LocalRepository
 ) : ViewModel(), MainFragmentViewModelContract {
-
     private val _messagesLiveData = SingleLiveEvent<MainFragmentMessages>()
     val messagesLiveData: SingleLiveEvent<MainFragmentMessages> by this::_messagesLiveData
 
@@ -118,7 +117,7 @@ class MainFragmentViewModel(
         }
     }
 
-    override fun saveRecord(wordData: WordData) {
+    override fun saveRecord(wordData: com.example.core.messages.WordData) {
         dbJob?.cancel()
         dbJob = mainScope.launch {
             localRepo.saveRecord(wordData)
