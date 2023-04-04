@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.core.messages.WordData
 import com.example.mytranslator.R
-import com.example.mytranslator.model.data.WordData
 
 class MainFragmentAdapter(
     val onItemClick: ((wordData: WordData) -> Unit)? = null

@@ -1,6 +1,6 @@
 package com.example.mytranslator.viewmodel
 
-import com.example.mytranslator.model.data.WordData
+import com.example.core.messages.WordData
 
 interface MainFragmentViewModelContract {
     fun onReloadButtonPressed()

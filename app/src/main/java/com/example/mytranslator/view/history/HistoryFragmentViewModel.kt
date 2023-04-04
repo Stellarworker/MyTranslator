@@ -1,10 +1,10 @@
 package com.example.mytranslator.view.history
 
 import androidx.lifecycle.ViewModel
-import com.example.mytranslator.model.data.SingleLiveEvent
-import com.example.mytranslator.model.data.messages.HistoryFragmentMessages
-import com.example.mytranslator.model.repository.local.LocalRepository
+import com.example.core.SingleLiveEvent
+import com.example.core.messages.HistoryFragmentMessages
 import com.example.mytranslator.viewmodel.HistoryFragmentViewModelContract
+import com.example.repository.local.LocalRepository
 import kotlinx.coroutines.*
 
 class HistoryFragmentViewModel(

@@ -6,6 +6,7 @@
 
     <!-- Bottom Navigation begin -->
     <string name="bottom_navigation_search">Search</string>
+    <string name="bottom_navigation_details">Details</string>
     <string name="bottom_navigation_history">History</string>
     <!-- Bottom Navigation end -->
 

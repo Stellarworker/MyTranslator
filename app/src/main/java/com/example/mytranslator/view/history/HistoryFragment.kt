@@ -5,10 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.core.messages.HistoryFragmentMessages
+import com.example.core.messages.WordData
 import com.example.mytranslator.databinding.FragmentHistoryBinding
-import com.example.mytranslator.model.data.WordData
-import com.example.mytranslator.model.data.messages.HistoryFragmentMessages
-import com.example.mytranslator.utils.ZERO
+import com.example.utils.ZERO
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HistoryFragment : Fragment() {

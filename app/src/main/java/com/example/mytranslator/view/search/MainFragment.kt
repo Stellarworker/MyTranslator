@@ -7,13 +7,16 @@ import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
+import androidx.navigation.findNavController
+import com.example.core.messages.MainFragmentMessages
+import com.example.core.messages.WordData
 import com.example.mytranslator.R
 import com.example.mytranslator.databinding.FragmentMainBinding
 import com.example.mytranslator.databinding.SearchDialogBinding
-import com.example.mytranslator.model.data.WordData
-import com.example.mytranslator.model.data.messages.MainFragmentMessages
-import com.example.mytranslator.utils.*
-import com.example.mytranslator.view.details.DetailsFragment
+import com.example.utils.ZERO
+import com.example.utils.hide
+import com.example.utils.makeSnackbar
+import com.example.utils.show
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainFragment : Fragment() {
@@ -162,18 +165,20 @@ class MainFragment : Fragment() {
     }
 
     private fun showDetails(wordData: WordData) {
-        activity?.supportFragmentManager?.let { manager ->
-            loadFragment(
-                DetailsFragment.newInstance(wordData),
-                DetailsFragment.FRAGMENT_TAG,
-                manager
-            )
-        }
+        val navController =
+            requireActivity().findNavController(R.id.main_activity_fragment_container)
+        val bundle = Bundle()
+        bundle.putParcelable(WORD_DETAILS_TAG, wordData)
+        navController.navigate(R.id.search_to_details, bundle)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         alertDialog?.dismiss()
         _binding = null
+    }
+
+    companion object {
+        private const val WORD_DETAILS_TAG = "WORD_DETAILS"
     }
 }
