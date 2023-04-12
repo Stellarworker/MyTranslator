@@ -3,6 +3,8 @@ package com.example.mytranslator.view.search
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -13,11 +15,10 @@ import com.example.core.messages.WordData
 import com.example.mytranslator.R
 import com.example.mytranslator.databinding.FragmentMainBinding
 import com.example.mytranslator.databinding.SearchDialogBinding
-import com.example.utils.ZERO
-import com.example.utils.hide
-import com.example.utils.makeSnackbar
-import com.example.utils.show
+import com.example.utils.*
+import org.koin.android.ext.android.getKoin
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.qualifier.named
 
 class MainFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null
@@ -29,7 +30,12 @@ class MainFragment : Fragment() {
         }
     )
     private val mainViewModel: MainFragmentViewModel by viewModel()
+    private val scope by lazy { getKoin().getOrCreateScope(String.EMPTY, named(SCOPE_ID)) }
     private var alertDialog: AlertDialog? = null
+    private val dataScreen by viewById<ConstraintLayout>(R.id.fragment_main_data_screen)
+    private val eventScreen by viewById<ConstraintLayout>(R.id.fragment_main_event_screen)
+    private val loadingScreen by viewById<ConstraintLayout>(R.id.fragment_main_loading_screen)
+    private val eventMessage by viewById<AppCompatTextView>(R.id.fragment_main_loading_screen)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -44,6 +50,7 @@ class MainFragment : Fragment() {
         initViewModel()
         initButtons()
         initRecyclerView()
+        greetUser()
         mainViewModel.restoreState()
     }
 
@@ -82,6 +89,11 @@ class MainFragment : Fragment() {
 
     private fun initRecyclerView() {
         binding.fragmentMainList.adapter = adapter
+    }
+
+    private fun greetUser() {
+        val text = scope.get<String>()
+        makeSnackbar(binding.root, text)
     }
 
     private fun processMessages(mainFragmentMessages: MainFragmentMessages) {
@@ -140,28 +152,22 @@ class MainFragment : Fragment() {
     }
 
     private fun showDataScreen() {
-        with(binding) {
-            fragmentMainDataScreen.show()
-            fragmentMainEventScreen.hide()
-            fragmentMainLoadingScreen.hide()
-        }
+        dataScreen.show()
+        eventScreen.hide()
+        loadingScreen.hide()
     }
 
     private fun showEventsScreen(message: String) {
-        with(binding) {
-            fragmentMainEventMessage.text = message
-            fragmentMainEventScreen.show()
-            fragmentMainDataScreen.hide()
-            fragmentMainLoadingScreen.hide()
-        }
+        eventMessage.text = message
+        eventScreen.show()
+        dataScreen.hide()
+        loadingScreen.hide()
     }
 
     private fun showLoadingScreen() {
-        with(binding) {
-            fragmentMainLoadingScreen.show()
-            fragmentMainDataScreen.hide()
-            fragmentMainEventScreen.hide()
-        }
+        loadingScreen.show()
+        dataScreen.hide()
+        eventScreen.hide()
     }
 
     private fun showDetails(wordData: WordData) {
@@ -174,11 +180,13 @@ class MainFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+
         alertDialog?.dismiss()
         _binding = null
     }
 
     companion object {
         private const val WORD_DETAILS_TAG = "WORD_DETAILS"
+        private const val SCOPE_ID = "GREETING"
     }
 }
