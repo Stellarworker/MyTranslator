@@ -1,5 +1,8 @@
 package com.example.mytranslator.view.search
 
+import android.graphics.RenderEffect
+import android.graphics.Shader
+import android.os.Build
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AlertDialog
@@ -35,7 +38,7 @@ class MainFragment : Fragment() {
     private val dataScreen by viewById<ConstraintLayout>(R.id.fragment_main_data_screen)
     private val eventScreen by viewById<ConstraintLayout>(R.id.fragment_main_event_screen)
     private val loadingScreen by viewById<ConstraintLayout>(R.id.fragment_main_loading_screen)
-    private val eventMessage by viewById<AppCompatTextView>(R.id.fragment_main_loading_screen)
+    private val eventMessage by viewById<AppCompatTextView>(R.id.fragment_main_event_message)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -159,6 +162,15 @@ class MainFragment : Fragment() {
 
     private fun showEventsScreen(message: String) {
         eventMessage.text = message
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            eventScreen.setRenderEffect(
+                RenderEffect.createBlurEffect(
+                    EFFECT_RADIUS_X,
+                    EFFECT_RADIUS_Y,
+                    Shader.TileMode.CLAMP
+                )
+            )
+        }
         eventScreen.show()
         dataScreen.hide()
         loadingScreen.hide()
@@ -188,5 +200,7 @@ class MainFragment : Fragment() {
     companion object {
         private const val WORD_DETAILS_TAG = "WORD_DETAILS"
         private const val SCOPE_ID = "GREETING"
+        private const val EFFECT_RADIUS_X = 5F
+        private const val EFFECT_RADIUS_Y = 5F
     }
 }

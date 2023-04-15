@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.NewSplash" parent="Theme.SplashScreen">
+        <item name="postSplashScreenTheme">@style/Theme.MyTranslator</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/book_dictionary_svgrepo_com</item>
+        <item name="windowSplashScreenBackground">@android:color/holo_blue_light</item>
+    </style>
+</resources>
