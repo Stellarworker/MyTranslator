@@ -66,6 +66,9 @@ dependencies {
     // Coil
     implementation(Coil.coil)
 
+    // Splashscreen
+    implementation(Splashscreen.splashscreen)
+
     // Tests
     testImplementation(Tests.junit)
     androidTestImplementation(Tests.ext_junit)

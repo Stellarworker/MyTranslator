@@ -47,6 +47,9 @@ object Versions {
     // Coil
     val coil = "2.1.0"
 
+    // Splashscreen
+    val splashscreen = "1.0.0"
+
     // Tests
     val junit = "4.13.2"
     val ext_junit = "1.1.5"
@@ -85,6 +88,10 @@ object Koin {
 
 object Coil {
     val coil = "io.coil-kt:coil:${Versions.coil}"
+}
+
+object Splashscreen {
+    val splashscreen = "androidx.core:core-splashscreen:${Versions.splashscreen}"
 }
 
 object Tests {
